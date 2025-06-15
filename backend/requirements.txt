@@ -1,0 +1,38 @@
+# Web Framework
+fastapi==0.109.2
+uvicorn==0.27.1
+python-multipart==0.0.9
+
+# Database
+sqlalchemy==2.0.27
+psycopg2-binary==2.9.9  # PostgreSQL adapter
+alembic==1.13.1  # For database migrations
+
+# Authentication & Security
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+cryptography==42.0.2
+python-dotenv==1.0.1
+
+# HTTP Client
+aiohttp==3.9.3
+requests==2.31.0
+
+# Slack Integration
+slack-sdk==3.27.0
+
+# AI/ML
+google-generativeai==0.3.2
+
+# Utilities
+pydantic==2.6.1
+python-dateutil==2.8.2
+typing-extensions==4.9.0
+
+# Development & Testing
+pytest==8.0.1
+pytest-asyncio==0.23.5
+httpx==0.26.0  # For testing FastAPI
+black==24.1.1  # Code formatting
+isort==5.13.2  # Import sorting
+flake8==7.0.0  # Linting 

@@ -243,4 +243,4 @@ Instructions:
    - Mention advance notice requirements
    - Highlight any restrictions or conditions
 
-Please provide a clear, focused response to the user's question.""" 
+Please provide a clear, focused response to the user's question. It should be a flowing conversation you can be flexible in how you want to answer each question, sound like a human""" 

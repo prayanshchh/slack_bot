@@ -9,7 +9,7 @@ from app.core.config import get_settings
 from app.database.base import get_db
 from app.models.user import User
 from app.schemas.user import UserCreate, UserResponse, Token, UserLogin
-from app.core.security import create_access_token, get_current_user
+from app.core.security import create_access_token
 from app.utils.cookie_utils import (
     set_auth_cookie,
     clear_auth_cookie,

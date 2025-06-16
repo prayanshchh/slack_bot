@@ -62,14 +62,10 @@ def set_auth_cookie(
     encrypted_data = encrypt_cookie_value(cookie_data)
     max_age = REMEMBER_ME_TOKEN_EXPIRE.total_seconds() if remember_me else NORMAL_TOKEN_EXPIRE.total_seconds()
     
-    # For development, use "lax" instead of "none" when not secure
     samesite_value = COOKIE_SAMESITE
-    if COOKIE_SAMESITE == "none" and not COOKIE_SECURE:
-        samesite_value = "lax"
     
     print(f"Debug: Setting cookie with domain='{COOKIE_DOMAIN}', path='/', secure={COOKIE_SECURE}, httponly={COOKIE_HTTPONLY}, samesite='{samesite_value}'")
     
-    # Try setting cookie without domain first
     cookie_kwargs = {
         "key": AUTH_COOKIE_NAME,
         "value": encrypted_data,
@@ -80,7 +76,6 @@ def set_auth_cookie(
         "path": "/"
     }
     
-    # Only add domain if it's specified and not None (for production)
     if COOKIE_DOMAIN:
         cookie_kwargs["domain"] = COOKIE_DOMAIN
     
@@ -90,15 +85,6 @@ def set_auth_cookie(
     
     set_cookie_headers = [header for header in response.headers.getlist("set-cookie")]
     print(f"Debug: Set-Cookie headers: {set_cookie_headers}")
-    
-    # Also try setting a test cookie to see if cookies work at all
-    response.set_cookie(
-        key="test_cookie",
-        value="test_value",
-        path="/",
-        max_age=3600
-    )
-    print(f"Debug: Test cookie headers: {[header for header in response.headers.getlist('set-cookie') if 'test_cookie' in header]}")
 
 def clear_auth_cookie(response: Response) -> None:
     """Clear the auth cookie"""

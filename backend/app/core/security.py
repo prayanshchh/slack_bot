@@ -47,12 +47,6 @@ async def get_current_user_from_cookie(
     db: Session = Depends(get_db)
 ) -> User:
     """Dependency to get current user from cookie"""
-    return await get_current_user(auth_data=auth_data, db=db)
-
-async def get_current_user(
-    auth_data: Optional[str] = None,
-    db: Session = Depends(get_db)
-) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",

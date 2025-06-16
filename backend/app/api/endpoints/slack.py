@@ -1,5 +1,4 @@
 import os
-import json
 import logging
 import aiohttp
 from typing import Dict, Any, Literal, List, Set
@@ -8,7 +7,6 @@ from pydantic import BaseModel
 from dotenv import load_dotenv
 from slack_sdk import WebClient
 from slack_sdk.errors import SlackApiError
-from functools import lru_cache
 import re
 from datetime import datetime, timedelta
 
@@ -40,9 +38,6 @@ def cleanup_old_events():
         if current_time - datetime.fromtimestamp(float(event_key.split('_')[1])) < timedelta(minutes=5)
     }
     
-    # Log the number of events we're tracking
-    logger.debug(f"Currently tracking {len(processed_events)} events")
-
 def lookup_username(uid: str) -> str:
     """Get username from user ID using users_info API"""
     try:
@@ -80,7 +75,6 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Initialize router instead of FastAPI app
 router = APIRouter(prefix="/slack")
 
 # Initialize Slack client
@@ -88,7 +82,6 @@ slack_client = WebClient(token=os.getenv("SLACK_BOT_TOKEN"))
 
 MCP_SERVER_URL = "http://localhost:8000/api/v1/mcp"
 
-# Define allowed event types
 ALLOWED_EVENT_TYPES = Literal["app_mention", "message"]
 
 async def get_user_info(user_id: str) -> Dict[str, Any]:
@@ -260,9 +253,7 @@ def get_other_user_in_dm(channel_id: str) -> str:
 
 @router.post("/events")
 async def handle_slack_events(event: SlackEvent, response: Response):
-    try:
-        logger.info(f"Received Slack event of type: {event.type}")
-        
+    try:        
         # Handle URL verification
         if event.type == "url_verification":
             logger.info("Handling URL verification request")
@@ -271,14 +262,11 @@ async def handle_slack_events(event: SlackEvent, response: Response):
                 raise HTTPException(status_code=400, detail="Missing challenge parameter")
             return {"challenge": event.challenge}
         
-        # Check for duplicate events
         if event.is_duplicate_event():
-            logger.info(f"Ignoring duplicate event with timestamp: {event.event.get('event_ts') if event.event else 'unknown'}")
             response.status_code = 200
             return {"status": "ok", "detail": "Duplicate event ignored"}
         
         if not event.is_allowed_event():
-            logger.warning(f"Received unallowed event type: {event.type}")
             raise HTTPException(
                 status_code=400,
                 detail="This endpoint only handles app mentions and direct messages"
